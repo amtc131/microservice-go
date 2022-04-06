@@ -42,7 +42,6 @@ func AddProduct(p *Product) {
 func UpdateProduct(id int, p *Product) error {
 	_, pos, err := findProduct(id)
 
-	fmt.Print(">>>", p.ID, pos)
 	if err != nil {
 		return err
 	}

@@ -8,6 +8,8 @@ import (
 	"os"
 	"os/signal"
 	"time"
+
+	"github.com/gorilla/mux"
 )
 
 func main() {
@@ -15,15 +17,21 @@ func main() {
 	l := log.New(os.Stdout, "product-api: ", log.LstdFlags)
 
 	//create the handlers
-	//hh := handlers.NewHello(l)
-	//	gh := handlers.NewGoodbye(l)
 	ph := handlers.NewProducts(l)
 
 	//create a new server mux and register the handlers
-	sm := http.NewServeMux()
-	//	sm.Handle("/hello", hh)
-	//	sm.Handle("/goodbye", gh)
-	sm.Handle("/", ph)
+	sm := mux.NewRouter()
+
+	getRouter := sm.Methods(http.MethodGet).Subrouter()
+	getRouter.HandleFunc("/", ph.GetProducts)
+
+	putRouter := sm.Methods(http.MethodPut).Subrouter()
+	putRouter.HandleFunc("/{id:[0-9]}", ph.UpdateProducts)
+	putRouter.Use(ph.MiddlewareProductValidation)
+
+	postRouter := sm.Methods(http.MethodPost).Subrouter()
+	postRouter.HandleFunc("/", ph.AddProduct)
+	postRouter.Use(ph.MiddlewareProductValidation)
 
 	//create a new server
 	s := &http.Server{
@@ -53,18 +61,3 @@ func main() {
 
 	s.Shutdown(ctx)
 }
-
-/*	http.HandleFunc("/", func(rw http.ResponseWriter, r *http.Request) {
-		log.Println("Hello world!!")
-		d, _ := ioutil.ReadAll(r.Body)
-		if err != nil {
-			http.Error(rw, "Ooops", http.StatusBadRequest)
-			return
-		}
-		fmt.Fprintf(rw, "Hello  %s \n", d)
-	})
-
-	http.HandleFunc("/goodbye", func(http.ResponseWriter, *http.Request) {
-		log.Println("GoodBye world!!")
-	})
-*/

@@ -1,0 +1,67 @@
+basePath: /
+consumes:
+- application/json
+definitions:
+  Product:
+    description: Product defines the structure for an API product
+    properties:
+      description:
+        description: the description for this poduct
+        maxLength: 10000
+        type: string
+        x-go-name: Description
+      id:
+        description: the id for the product
+        format: int64
+        minimum: 1
+        type: integer
+        x-go-name: ID
+      name:
+        description: the name for this poduct
+        maxLength: 255
+        type: string
+        x-go-name: Name
+      price:
+        description: the price for the product
+        format: float
+        minimum: 0.01
+        type: number
+        x-go-name: Price
+      sku:
+        description: the SKU for the product
+        pattern: '[a-z]+-[a-z]+-[a-z]+'
+        type: string
+        x-go-name: SKU
+    required:
+    - name
+    - price
+    - sku
+    type: object
+    x-go-package: microservice/main.go/data
+host: localhost
+info:
+  description: Documentation for Product API
+  title: of Product API
+  version: 0.0.1
+paths:
+  /products:
+    get:
+      description: Return a list of Products
+      operationId: listProducts
+      responses:
+        "200":
+          $ref: '#/responses/productsResponse'
+      tags:
+      - products
+produces:
+- application/json
+responses:
+  productsResponse:
+    description: A list of products returns in the response
+    schema:
+      items:
+        $ref: '#/definitions/Product'
+      type: array
+schemes:
+- https
+swagger: "2.0"

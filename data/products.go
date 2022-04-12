@@ -60,13 +60,13 @@ func GetProductByID(id int) (*Product, error) {
 // item
 // If a product with the given id does not exist in the database
 // this function returns a ProductNotFount error
-func UpdateProduct(p Product) error {
+func UpdateProduct(p *Product) error {
 	i := findIndexByProductID(p.ID)
 	if i == -1 {
 		return ErrProductNotFound
 	}
 	//update the product int the DB
-	productList[i] = &p
+	productList[i] = p
 	return nil
 }
 
@@ -85,7 +85,7 @@ func DeleteProduct(id int) error {
 		return ErrProductNotFound
 	}
 
-	productList = append(productList[:i], productList[i+1])
+	productList = append(productList[:i], productList[i+1:]...)
 
 	return nil
 }

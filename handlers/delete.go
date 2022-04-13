@@ -9,7 +9,7 @@ import (
 // Update a products details
 //
 // responses:
-//	201: noContentResponse
+//		201: noContentResponse
 //  404: errorResponse
 //  501: errorResponse
 

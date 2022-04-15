@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/go-openapi/runtime/middleware"
+	gohandlers "github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"github.com/nicholasjackson/env"
 )
@@ -53,10 +54,12 @@ func main() {
 	getR.Handle("/docs", sh)
 	getR.Handle("/swagger.yaml", http.FileServer(http.Dir("./")))
 
+	ch := gohandlers.CORS(gohandlers.AllowedOrigins([]string{"http://localhost:4200"}))
+
 	//create a new server
 	s := http.Server{
 		Addr:         *bindAddress,      // configure the bind addres
-		Handler:      sm,                // set the default handler
+		Handler:      ch(sm),            // set the default handler
 		ErrorLog:     l,                 // set the logger for the server
 		IdleTimeout:  120 * time.Second, // max time to read request from the client
 		ReadTimeout:  1 * time.Second,   // max time for connections using TCP keep-alive

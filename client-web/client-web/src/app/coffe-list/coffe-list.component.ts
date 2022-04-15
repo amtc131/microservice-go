@@ -30,12 +30,12 @@ export class CoffeListComponent implements OnInit, AfterViewInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   products$!: Observable<any>;
   productsDataSource!: MatTableDataSource<Product[]>;
-  characterDatabase = new HttpDatabase(this.httpClient);
+  productDatabase = new HttpDatabase(this.httpClient);
   searchTerm$ = new Subject<string>();
 
 
   constructor(private httpClient: HttpClient,) {
-    this.characterDatabase
+    this.productDatabase
       .search(this.searchTerm$)
       .subscribe((response: any) => {
         this.productsDataSource = new MatTableDataSource(response);
@@ -47,7 +47,7 @@ export class CoffeListComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit() {
     this.paginator.page.subscribe(() => {
-      this.characterDatabase
+      this.productDatabase
         .getProducts("", "", this.paginator.pageIndex)
         .subscribe((response: any) => {
           this.productsDataSource = new MatTableDataSource(response);
@@ -59,7 +59,7 @@ export class CoffeListComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    this.characterDatabase.getProducts().subscribe((response: any) => {
+    this.productDatabase.getProducts().subscribe((response: any) => {
       this.productsDataSource = new MatTableDataSource(response);
       //this.resultsLength = response.info.count;
       this.productsDataSource.paginator = this.paginator;

@@ -1,8 +1,12 @@
 package handlers
 
 import (
+	"context"
 	"microservice/main.go/data"
 	"net/http"
+
+	protos "github.com/amtc131/microservice-go/currency/protos/currency"
+	//	protos "microservice/main-go/currency/protos/currency"
 )
 
 // swagger:route GET /products products listProducts
@@ -55,6 +59,20 @@ func (p *Products) ListSingle(rw http.ResponseWriter, r *http.Request) {
 		data.ToJSON(&GenericError{Message: err.Error()}, rw)
 		return
 	}
+
+	// get change rate
+	rr := &protos.RateRequest{
+		Base:        protos.Currencies(protos.Currencies_value["EUR"]),
+		Destination: protos.Currencies(protos.Currencies_value["GBP"]),
+	}
+	resp, err := p.cc.GetRate(context.Background(), rr)
+	if err != nil {
+		p.l.Println("[Error] error getting new rate", err)
+		data.ToJSON(&GenericError{Message: err.Error()}, rw)
+		return
+	}
+
+	prod.Price = prod.Price * resp.Rate
 
 	err = data.ToJSON(prod, rw)
 	if err != nil {

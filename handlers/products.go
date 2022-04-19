@@ -7,6 +7,10 @@ import (
 	"net/http"
 	"strconv"
 
+	protos "github.com/amtc131/microservice-go/currency/protos/currency"
+
+	//	protos "microservice/main-go/currency/protos/currency"
+
 	"github.com/gorilla/mux"
 )
 
@@ -15,13 +19,14 @@ type KeyProduct struct{}
 
 // Products is a http.Handler for getting and updating products
 type Products struct {
-	l *log.Logger
-	v *data.Validation
+	l  *log.Logger
+	v  *data.Validation
+	cc protos.CurrencyClient
 }
 
 // NewProducts returns a new products handler with the given logger
-func NewProducts(l *log.Logger, v *data.Validation) *Products {
-	return &Products{l, v}
+func NewProducts(l *log.Logger, v *data.Validation, cc protos.CurrencyClient) *Products {
+	return &Products{l, v, cc}
 }
 
 // ErrInvalidProductPath is an error message when the product path is not valid

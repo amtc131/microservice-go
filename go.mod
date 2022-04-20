@@ -3,6 +3,7 @@ module microservice/main.go
 go 1.18
 
 require (
+	github.com/amtc131/microservice-go/currency v0.0.0-20220419030440-a431a7711e93
 	github.com/go-openapi/errors v0.20.2
 	github.com/go-openapi/runtime v0.23.3
 	github.com/go-openapi/strfmt v0.21.2
@@ -13,7 +14,7 @@ require (
 	github.com/gorilla/mux v1.8.0
 	github.com/nicholasjackson/env v0.6.0
 	github.com/stretchr/testify v1.7.0
-	google.golang.org/grpc v1.43.0
+	google.golang.org/grpc v1.45.0
 )
 
 require (

@@ -13,8 +13,6 @@ import (
 	protos "github.com/amtc131/microservice-go/currency/protos/currency"
 	"google.golang.org/grpc"
 
-	//	protos "microservice/main-go/currency/protos/currency"
-
 	"github.com/go-openapi/runtime/middleware"
 	gohandlers "github.com/gorilla/handlers"
 	"github.com/gorilla/mux"

@@ -77,7 +77,7 @@ func (p *ProductsDB) GetProducts(currency string) (Products, error) {
 // GetProductByID return a sigle product wich matches the id from the
 // database.
 // If a product is not found this function returns a ProductNotFound error
-func (p *ProductsBD) GetProductByID(id int, currency string) (*Product, error) {
+func (p *ProductsDB) GetProductByID(id int, currency string) (*Product, error) {
 	i := findIndexByProductID(id)
 	if i == -1 {
 		return nil, ErrProductNotFound
@@ -101,26 +101,26 @@ func (p *ProductsBD) GetProductByID(id int, currency string) (*Product, error) {
 // item
 // If a product with the given id does not exist in the database
 // this function returns a ProductNotFount error
-func UpdateProduct(p *Product) error {
-	i := findIndexByProductID(p.ID)
+func (p *ProductsDB) UpdateProduct(pr *Product) error {
+	i := findIndexByProductID(pr.ID)
 	if i == -1 {
 		return ErrProductNotFound
 	}
 	//update the product int the DB
-	productList[i] = p
+	productList[i] = pr
 	return nil
 }
 
 // AddProduct adds a new product to the database
-func AddProduct(p *Product) {
+func (p *ProductsDB) AddProduct(pr *Product) {
 	// get the next id in sequnce
 	maxID := productList[len(productList)-1].ID
-	p.ID = maxID + 1
-	productList = append(productList, p)
+	pr.ID = maxID + 1
+	productList = append(productList, pr)
 }
 
 // DeleteProduct deletes a product from the database
-func DeleteProduct(id int) error {
+func (p *ProductsDB) DeleteProduct(id int) error {
 	i := findIndexByProductID(id)
 	if i == -1 {
 		return ErrProductNotFound
@@ -143,7 +143,7 @@ func findIndexByProductID(id int) int {
 	return -1
 }
 
-func (p *ProductsDB) getRate(destination) (float64, error) {
+func (p *ProductsDB) getRate(destination string) (float64, error) {
 	// get change rate
 	rr := &protos.RateRequest{
 		Base:        protos.Currencies(protos.Currencies_value["EUR"]),

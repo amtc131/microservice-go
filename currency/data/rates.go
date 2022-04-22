@@ -59,6 +59,8 @@ func (e *ExchangeRates) getRates() error {
 		e.rates[c.Currency] = r
 	}
 
+	e.rates["EUR"] = 1
+
 	return nil
 }
 

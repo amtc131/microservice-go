@@ -8,6 +8,8 @@ import (
 	"github.com/amtc131/microservice-go/currency/data"
 	protos "github.com/amtc131/microservice-go/currency/protos/currency"
 	"github.com/hashicorp/go-hclog"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 type Currency struct {
@@ -44,8 +46,26 @@ func (c *Currency) handleUpdates() {
 
 }
 
+// GetRate implements the CurrencyServer GetRate method and returns the currency exchange rate
+// for the two given currencies
 func (c *Currency) GetRate(ctx context.Context, rr *protos.RateRequest) (*protos.RateResponse, error) {
 	c.log.Info("Handle GetRate", "base", rr.GetBase(), "destination", rr.GetDestination())
+
+	if rr.Base == rr.Destination {
+		err := status.Newf(
+			codes.InvalidArgument,
+			"Base currency %s can not be the same as the destination currency %s",
+			rr.Base.String(),
+			rr.Destination.String(),
+		)
+
+		err, wde := err.WithDetails(rr)
+		if wde != nil {
+			return nil, wde
+		}
+
+		return nil, err.Err()
+	}
 
 	rate, err := c.rates.GetRate(rr.GetBase().String(), rr.GetDestination().String())
 	if err != nil {
@@ -55,6 +75,7 @@ func (c *Currency) GetRate(ctx context.Context, rr *protos.RateRequest) (*protos
 	return &protos.RateResponse{Base: rr.Base, Destination: rr.Destination, Rate: rate}, nil
 }
 
+// SubscribeRates  implements the gRPC bidirection streaming method for the server
 func (c *Currency) SubscribeRates(src protos.Currency_SubscribeRatesServer) error {
 
 	for {

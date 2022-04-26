@@ -12,7 +12,9 @@ message RateRequest{
 }
 
 message RateResponse{
-    double rate = 1;
+   Currencies Base = 1;
+   Currencies Destination = 2;
+   double Rate = 3;
 }
 
 // Currencies is an enum which represents the allowed currencies for the API

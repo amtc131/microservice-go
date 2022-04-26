@@ -11,3 +11,20 @@ in terminal<br\>
 
 For generate client run the command <br\>
 swagger generate client -f ../swagger.yaml -A product-apil
+
+
+> Update rates, change *JPY*
+
+curl localhost:9090/products?currency=JPY
+
+> Update rates with grpcurl
+
+grpcurl --plaintext --msg-template -d @ localhost:9092 Currency/SubscribeRates
+
+Paste to JSON 
+
+
+{                                                                                                              
+    "Base": "GBP",                                                                                             
+    "Destination": "USD"                                                                                       
+}

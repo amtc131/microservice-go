@@ -170,7 +170,7 @@ func findIndexByProductID(id int) int {
 }
 
 func (p *ProductsDB) getRate(destination string) (float64, error) {
-	if _, ok := p.rates[destination]; ok {
+	if r, ok := p.rates[destination]; ok {
 		return r, nil
 	}
 

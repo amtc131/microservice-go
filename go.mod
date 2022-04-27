@@ -3,7 +3,7 @@ module microservice/main.go
 go 1.18
 
 require (
-	github.com/amtc131/microservice-go/currency v0.0.0-20220427025601-8b89a21035cb
+	github.com/amtc131/microservice-go/currency v0.0.0-20220427031600-6d67c26f097e
 	github.com/go-openapi/errors v0.20.2
 	github.com/go-openapi/runtime v0.23.3
 	github.com/go-openapi/strfmt v0.21.2

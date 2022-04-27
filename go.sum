@@ -12,6 +12,8 @@ github.com/amtc131/microservice-go/currency v0.0.0-20220426015006-22f6b6c655ab h
 github.com/amtc131/microservice-go/currency v0.0.0-20220426015006-22f6b6c655ab/go.mod h1:IYEAESNW8mqUpB7akjkBGuKWBlGDvDo+ZXGA4RGfxUk=
 github.com/amtc131/microservice-go/currency v0.0.0-20220427025601-8b89a21035cb h1:DGKriLXfYxADcE1gBuruHS+u9Gc2OFxxlKd1fiyirvo=
 github.com/amtc131/microservice-go/currency v0.0.0-20220427025601-8b89a21035cb/go.mod h1:IYEAESNW8mqUpB7akjkBGuKWBlGDvDo+ZXGA4RGfxUk=
+github.com/amtc131/microservice-go/currency v0.0.0-20220427031600-6d67c26f097e h1:na0UdkpJZm6lPlaDCdFgjM9mp7cr4BGKw1SosWxEhFs=
+github.com/amtc131/microservice-go/currency v0.0.0-20220427031600-6d67c26f097e/go.mod h1:K9sJYX8ktsE0Z3iQ45YIL+fuwQzmvj53xyPsDDWzFOE=
 github.com/antihax/optional v1.0.0/go.mod h1:uupD/76wgC+ih3iEmQUL+0Ugr19nfwCT1kdvxnR2qWY=
 github.com/asaskevich/govalidator v0.0.0-20200907205600-7a23bdc65eef/go.mod h1:WaHUgvxTVq04UNunO+XhnAqY/wQc+bxr74GqbsZ/Jqw=
 github.com/asaskevich/govalidator v0.0.0-20210307081110-f21760c49a8d h1:Byv0BzEl3/e6D5CLfI0j/7hiIEtvGVFPCZ7Ei2oq8iQ=

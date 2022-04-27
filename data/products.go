@@ -71,13 +71,24 @@ func (p *ProductsDB) handleUpdates() {
 
 	for {
 		rr, err := sub.Recv()
-		p.log.Info("Recived updated rate from server", "dest", rr.GetDestination().String())
-		if err != nil {
-			p.log.Error("Error reciving message", "error", err)
-			return
+
+		if grpcError := rr.GetError(); grpcError != nil {
+			p.log.Error("Error subscribing for rates", "error", err)
+			continue
 		}
 
-		p.rates[rr.Destination.String()] = rr.Rate
+		if resp := rr.GetRateResponse(); resp != nil {
+			p.log.Info("Recived updated rate from server", "dest", resp.GetDestination().String())
+
+			if err != nil {
+				p.log.Error("Error reciving message", "error", err)
+				return
+			}
+
+			p.rates[resp.Destination.String()] = resp.Rate
+
+		}
+
 	}
 }
 

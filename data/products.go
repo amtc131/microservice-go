@@ -70,25 +70,42 @@ func (p *ProductsDB) handleUpdates() {
 	p.client = sub
 
 	for {
-		rr, err := sub.Recv()
+		// Recv returns a StreamingRateResponse which can contain one of two messages
+		// RateResponse or an Error.
+		// We need to handle each case separately
+		srr, err := sub.Recv()
 
-		if grpcError := rr.GetError(); grpcError != nil {
-			p.log.Error("Error subscribing for rates", "error", err)
-			continue
+		// handle connection errors
+		// this is normally terminal requires a reconnect
+		if err != nil {
+			p.log.Error("Error while waiting for message", "error", err)
+			return
 		}
 
-		if resp := rr.GetRateResponse(); resp != nil {
-			p.log.Info("Recived updated rate from server", "dest", resp.GetDestination().String())
+		// handle a returned error message
+		if ge := srr.GetError(); ge != nil {
+			sre := status.FromProto(ge)
 
-			if err != nil {
-				p.log.Error("Error reciving message", "error", err)
-				return
+			if sre.Code() == codes.InvalidArgument {
+				errDetails := ""
+				// get the RateRequest serialized in the error response
+				// Details is a collection but we are only returning a single item
+				if d := sre.Details(); len(d) > 0 {
+					p.log.Error("Deets", "d", d)
+					if rr, ok := d[0].(*protos.RateRequest); ok {
+						errDetails = fmt.Sprintf("base: %s destination: %s", rr.GetBase().String(), rr.GetDestination().String())
+					}
+				}
+
+				p.log.Error("Received error from currency service rate subscription", "error", ge.GetMessage(), "details", errDetails)
 			}
-
-			p.rates[resp.Destination.String()] = resp.Rate
-
 		}
 
+		// handle a rate response
+		if rr := srr.GetRateResponse(); rr != nil {
+			p.log.Info("Recieved updated rate from server", "dest", rr.GetDestination().String())
+			p.rates[rr.Destination.String()] = rr.Rate
+		}
 	}
 }
 

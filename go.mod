@@ -3,7 +3,7 @@ module microservice/main.go
 go 1.18
 
 require (
-	github.com/amtc131/microservice-go/currency v0.0.0-20220426015006-22f6b6c655ab
+	github.com/amtc131/microservice-go/currency v0.0.0-20220427025601-8b89a21035cb
 	github.com/go-openapi/errors v0.20.2
 	github.com/go-openapi/runtime v0.23.3
 	github.com/go-openapi/strfmt v0.21.2
@@ -48,7 +48,7 @@ require (
 	golang.org/x/net v0.0.0-20220425223048-2871e0cb64e4 // indirect
 	golang.org/x/sys v0.0.0-20220422013727-9388b58f7150 // indirect
 	golang.org/x/text v0.3.7 // indirect
-	google.golang.org/genproto v0.0.0-20220422154200-b37d22cd5731 // indirect
+	google.golang.org/genproto v0.0.0-20220426171045-31bebdecfb46 // indirect
 	google.golang.org/protobuf v1.28.0 // indirect
 	gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c // indirect
 	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect

@@ -36,13 +36,13 @@ func (c *Currency) handleUpdates() {
 					c.log.Error("Unable to get update rate", "base", rr.GetBase().String(), "destination", rr.GetDestination().String())
 				}
 
-				err = k.Send(
-					&protos.StreamingRateResponse{
-						Message: &protos.StreamingRateResponse_RateReponse{
-							RateResponse: &protos.RateResponse{Base: rr.Base, Destination: rr.Destination, Rate: r},
-						},
+				// create the response and send to the client
+				err = k.Send(&protos.StreamingRateResponse{
+					Message: &protos.StreamingRateResponse_RateResponse{
+						RateResponse: &protos.RateResponse{Base: rr.Base, Destination: rr.Destination, Rate: r},
 					},
-				)
+				})
+
 				if err != nil {
 					c.log.Error("Unable to send updated rate", "base", rr.GetBase().String(), "destination", rr.GetDestination().String())
 				}
@@ -102,40 +102,26 @@ func (c *Currency) SubscribeRates(src protos.Currency_SubscribeRatesServer) erro
 		}
 
 		//check that subscribtion does not exist
-		var validationError *status.Status
-		for _, v := range rrs {
-			if v.Base == rr.Base && v.Destination == rr.Destination {
+		for _, r := range rrs {
+			// if we already have subscribe to this currency return an error
+			if r.Base == rr.Base && r.Destination == rr.Destination {
+				c.log.Error("Subscription already active", "base", rr.Base.String(), "dest", rr.Destination.String())
 
-				// subscription exists return errors
-				s := status.Newf(
-					codes.AlreadyExists,
-					"Unable to subscribe for currency as subscription already exists")
-
-				// add the original request as metadata
-				s, err = s.WithDetails(err)
+				grpcError := status.New(codes.InvalidArgument, "Subscription already active for rate")
+				grpcError, err = grpcError.WithDetails(rr)
 				if err != nil {
-					c.log.Error("Unable to add metadate to error", "error", err)
-					break
+					c.log.Error("Unable to add metadata to error message", "error", err)
+					continue
 				}
 
-				break
-
+				// Can't return error as that will terminate the connection, instead must send an error which
+				// can be handled by the client Recv stream.
+				rrs := &protos.StreamingRateResponse_Error{Error: grpcError.Proto()}
+				src.Send(&protos.StreamingRateResponse{Message: rrs})
 			}
 		}
 
-		//if validation error return error and continue
-		if validationError != nil {
-			src.Send(
-				&protos.StreamingRateResponse{
-					Message: &protos.StreamingRateResponse_Error{
-						Error: s.Proto(),
-					},
-				},
-			)
-			continue
-		}
-
-		// all ok
+		// all ok add to collection
 		rrs = append(rrs, rr)
 		c.subscriptions[src] = rrs
 	}

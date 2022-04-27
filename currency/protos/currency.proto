@@ -20,7 +20,7 @@ message RateResponse{
 
 message StreamingRateResponse{
     oneof message{
-        RateResponse rate_reponse = 1;
+        RateResponse rate_response = 1;
         google.rpc.Status error = 2;
     }
 }
